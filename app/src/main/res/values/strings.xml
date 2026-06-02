@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">BasicAndroidApp</string>
+
+<!--    Component  -->
+    <string name = "lbl_company_name">Top App Bar</string>
+
+
+
+</resources>
