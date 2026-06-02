@@ -102,16 +102,6 @@ fun ScreenTopAppBar() {
 
             },
             properties = DialogProperties(dismissOnClickOutside = true)
-//            modifier = TODO(),
-//            icon = TODO(),
-//            text = TODO(),
-//            shape = TODO(),
-//            containerColor = TODO(),
-//            iconContentColor = TODO(),
-//            titleContentColor = TODO(),
-//            textContentColor = TODO(),
-//            tonalElevation = TODO(),
-//            properties = TODO()
         )
     }
 
@@ -163,16 +153,6 @@ fun ScreenTopAppBar() {
                 )
             },
             properties = DialogProperties(dismissOnClickOutside = true)
-//            modifier = TODO(),
-//            icon = TODO(),
-//            text = TODO(),
-//            shape = TODO(),
-//            containerColor = TODO(),
-//            iconContentColor = TODO(),
-//            titleContentColor = TODO(),
-//            textContentColor = TODO(),
-//            tonalElevation = TODO(),
-//            properties = TODO()
         )
     }
 
