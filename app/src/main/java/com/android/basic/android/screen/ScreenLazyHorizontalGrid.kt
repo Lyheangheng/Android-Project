@@ -102,7 +102,7 @@ fun ScreenLazyHorizontalGrid() {
                     fontSize = 30.sp,
                     fontWeight = FontWeight.ExtraBold,
                     fontFamily = FontFamily(
-                        Font(R.font.lato_italic)
+//                        Font(R.font.lato_italic)
                     ),
                     text = "Quick picks"
                 )

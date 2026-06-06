@@ -15,6 +15,7 @@ import com.android.basic.android.component.ScreenSlider
 import com.android.basic.android.component.ScreenSnackBar
 import com.android.basic.android.component.ScreenSwitch
 import com.android.basic.android.component.ScreenTabs
+import com.android.basic.android.component.ScreenTextFields
 import com.android.basic.android.component.homework.DetermineIndicators
 import com.android.basic.android.component.homework.HomeworkOnlineShopHomePage
 import com.android.basic.android.component.homework.ScreenSliderHomework
@@ -37,7 +38,8 @@ class MainActivity : ComponentActivity() {
 //                ScreenSliderHomework()
 //                ScreenSnackBar()
 //                ScreenSwitch()
-                ScreenTabs()
+//                ScreenTabs()
+                ScreenTextFields()
             }
         }
     }
