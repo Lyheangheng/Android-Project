@@ -19,6 +19,8 @@ import com.android.basic.android.component.ScreenTextFields
 import com.android.basic.android.component.ScreenToolBar
 import com.android.basic.android.component.homework.DetermineIndicators
 import com.android.basic.android.component.homework.HomeworkOnlineShopHomePage
+import com.android.basic.android.component.homework.ScreenFloatingBottomBar
+import com.android.basic.android.component.homework.ScreenFloatingBottomBar1
 import com.android.basic.android.component.homework.ScreenSliderHomework
 import com.android.basic.android.component.homework.SpotifyUI
 import com.android.basic.android.ui.theme.BaseTheme
@@ -41,7 +43,9 @@ class MainActivity : ComponentActivity() {
 //                ScreenSwitch()
 //                ScreenTabs()
 //                ScreenTextFields()
-                ScreenToolBar()
+//                ScreenToolBar()
+//                ScreenFloatingBottomBar()
+                ScreenFloatingBottomBar1()
             }
         }
     }
