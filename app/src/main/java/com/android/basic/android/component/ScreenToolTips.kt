@@ -83,6 +83,8 @@ import androidx.compose.material3.rememberDrawerState
 import androidx.compose.material3.rememberTooltipState
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
@@ -110,7 +112,10 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.offset
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.android.basic.android.R
+import com.android.basic.android.TooltipViewModel
+import com.android.basic.android.model.ReceiverAccountModel
 import com.android.basic.android.ui.theme.BaseTheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -132,6 +137,29 @@ fun ScreenToolTips() {
 
     val scope = rememberCoroutineScope()
     val toolTipState = rememberTooltipState()
+    val toolTipState1 = rememberTooltipState()
+
+
+
+    val tooltipViewModel = TooltipViewModel()
+    val accountInfo by tooltipViewModel.receiverAccount.collectAsStateWithLifecycle()
+    var receiverAccount by remember { mutableStateOf<ReceiverAccountModel?>(null) }
+
+
+    LaunchedEffect(accountInfo) {
+
+        accountInfo.let{
+            if(it != null){
+                receiverAccount = accountInfo
+                println("=====> $accountInfo")
+            }
+        }
+
+
+    }
+
+
+
 
 
     Scaffold(
@@ -204,53 +232,83 @@ fun ScreenToolTips() {
                 .padding(paddingValue),
             contentAlignment = Alignment.Center
         ) {
-            TooltipBox(
-                positionProvider = TooltipDefaults.rememberRichTooltipPositionProvider(),
-                state = toolTipState,
-                tooltip = {
-                    RichTooltip(
-                        title = {
-                            Text(text = "title")
-                        },
-                        action = {
-                            TextButton(
-                                shape = MaterialTheme.shapes.small,
-                                onClick = {
-                                    scope.launch {
-                                        toolTipState.dismiss()
-                                    }
-                                }
-                            ){
-                                Text(text = "Dismiss")
-                            }
-                        },
-                        shape = RoundedCornerShape(8.dp),
-                        tonalElevation = 2.dp,
-                        shadowElevation = 8.dp,
-                    ) {
-                        Text(text = """
-                            A RichTooltip displays a tooltip with a title and dismiss action.
-                            When activated, either by a long-press or hovering over the TooltipBox content with the mouse pointer, the tooltip is displayed for about one second. You can dismiss this tooltip by either tapping elsewhere on the screen or using the dismiss action button.
-                            When the dismiss action executes, the system launches a coroutine to call tooltipState.dismiss. This verifies the action execution isn't blocked while the tooltip is displayed.
-                            onClick = coroutineScope.launch { tooltipState.show() } } launches a coroutine to manually show the tooltip using tooltipState.show.
-                            The action parameter allows for the adding of interactive elements to a tooltip, such as a button.
-                            The caretSize parameter modifies the size of the tooltip's arrow.
-                        """.trimIndent())
-                    }
-                }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center,
             ) {
-                IconButton(
-                    onClick = {
-                        scope.launch {
-                            toolTipState.show()
+                TooltipBox(
+                    positionProvider = TooltipDefaults.rememberPlainTooltipPositionProvider(),
+                    state = toolTipState1,
+                    tooltip = {
+                        PlainTooltip{
+                            Text(text = "$receiverAccount")
                         }
                     }
                 ) {
-                    Icon(
-                        painter = painterResource(R.drawable.ic_mic_24),
-                        contentDescription = null,
-                    )
+                    IconButton(
+                        onClick = {
+                            scope.launch {
+                                tooltipViewModel.getAccountInfo()
+                                toolTipState1.show()
+                            }
+                        }
+                    ){
+                        Icon(
+                            painter = painterResource(R.drawable.ic_menu),
+                            contentDescription = null
+                        )
+                    }
                 }
+//                TooltipBox(
+//                    positionProvider = TooltipDefaults.rememberRichTooltipPositionProvider(),
+//                    state = toolTipState,
+//                    tooltip = {
+//                        RichTooltip(
+//                            title = {
+//                                Text(text = "title")
+//                            },
+//                            action = {
+//                                TextButton(
+//                                    shape = MaterialTheme.shapes.small,
+//                                    onClick = {
+//                                        scope.launch {
+//                                            toolTipState.dismiss()
+//                                        }
+//                                    }
+//                                ){
+//                                    Text(text = "Dismiss")
+//                                }
+//                            },
+//                            shape = RoundedCornerShape(8.dp),
+//                            tonalElevation = 2.dp,
+//                            shadowElevation = 8.dp,
+//                        ) {
+//                            Text(text = """
+//                            A RichTooltip displays a tooltip with a title and dismiss action.
+//                            When activated, either by a long-press or hovering over the TooltipBox content with the mouse pointer, the tooltip is displayed for about one second. You can dismiss this tooltip by either tapping elsewhere on the screen or using the dismiss action button.
+//                            When the dismiss action executes, the system launches a coroutine to call tooltipState.dismiss. This verifies the action execution isn't blocked while the tooltip is displayed.
+//                            onClick = coroutineScope.launch { tooltipState.show() } } launches a coroutine to manually show the tooltip using tooltipState.show.
+//                            The action parameter allows for the adding of interactive elements to a tooltip, such as a button.
+//                            The caretSize parameter modifies the size of the tooltip's arrow.
+//                        """.trimIndent())
+//                        }
+//                    }
+//                ) {
+//                    IconButton(
+//                        onClick = {
+//                            scope.launch {
+//                                toolTipState.show()
+//                            }
+//                        }
+//                    ) {
+//                        Icon(
+//                            painter = painterResource(R.drawable.ic_mic_24),
+//                            contentDescription = null,
+//                        )
+//                    }
+//                }
             }
 
 
