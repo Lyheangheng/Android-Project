@@ -19,6 +19,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -29,15 +30,54 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.basic.android.R
+import com.android.basic.android.model.BadgeViewModel
+import com.android.basic.android.model.BaseUiState
+import com.android.basic.android.util.LoadingUtil
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ScreenBadge() {
+fun ScreenBadge(
+    badgeViewModel: BadgeViewModel = viewModel()
+) {
 
+
+    val messageUiState by badgeViewModel.messageUiState.collectAsStateWithLifecycle()
+
+    var message by remember { mutableStateOf("") }
 
     var hasNewNotification by remember { mutableStateOf(false) }
     var badgeNumber by remember { mutableStateOf(0) }
+
+
+LaunchedEffect(Unit) {
+    badgeViewModel.requestData()
+}
+
+
+    LaunchedEffect(messageUiState){
+        when(val state = messageUiState){
+            is BaseUiState.Loading -> {
+                LoadingUtil.showLoading()
+            }
+            is BaseUiState.Success -> {
+                LoadingUtil.hideLoading()
+                message = state.data
+            }
+            is BaseUiState.Error -> {
+                LoadingUtil.hideLoading()
+            }
+            is BaseUiState.ErrorWithException -> {
+                LoadingUtil.hideLoading()
+            }
+            else -> {}
+        }
+    }
+
+
+
 
     Scaffold(
         modifier = Modifier.navigationBarsPadding(),
