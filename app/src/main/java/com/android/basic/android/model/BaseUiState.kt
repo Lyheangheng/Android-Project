@@ -10,8 +10,8 @@ sealed class BaseUiState<out T> {
 
 /**
  * Global loading state
- * 1. base ui state(done)
- * 2. loading util(singleton)(done)
+ * 1. base ui state
+ * 2. loading util(singleton)
  * 3. Use view model
  * 4. use loading content in screen
  * 5. loading UI Content

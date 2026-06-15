@@ -23,5 +23,4 @@ class TooltipViewModel: ViewModel()  {
             _receiverAccount.emit(accountInfo)
         }
     }
-
 }

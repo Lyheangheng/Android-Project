@@ -56,6 +56,7 @@ import com.android.basic.android.ui.theme.BaseTheme
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.android.basic.android.storage.productLists
+import com.android.basic.android.util.LoadingScreen
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.nio.file.WatchEvent
@@ -272,6 +273,7 @@ fun ScreenLoadingAndProgressIndicators() {
 @Composable
 fun ScreenLoadingAndProgressIndicatorsPreview() {
     BaseTheme() {
-        ScreenLoadingAndProgressIndicators()
+//        ScreenLoadingAndProgressIndicators()
+        LoadingScreen()
     }
 }
