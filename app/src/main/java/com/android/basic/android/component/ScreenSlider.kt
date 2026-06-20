@@ -54,7 +54,8 @@ import com.android.basic.android.ui.theme.BaseTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ScreenSlider() {
+fun ScreenSlider(
+) {
 
     var sliderPosition by remember { mutableFloatStateOf(0.0f) }
     var sliderPositionRange by remember { mutableFloatStateOf(0.0f) }
@@ -67,11 +68,10 @@ fun ScreenSlider() {
                 )
             }, navigationIcon = {
                 IconButton(
-                    onClick = {
-
-                    }) {
+                    onClick = {}
+                    ) {
                     Icon(
-                        painter = painterResource(R.drawable.ic_sort_24),
+                        painter = painterResource(R.drawable.ic_arrow_back_24),
                         contentDescription = null,
                     )
                 }
@@ -120,7 +120,7 @@ fun ScreenSlider() {
                                 .clip(shape = CircleShape)
                                 .size(20.dp)
                                 .background(color = MaterialTheme.colorScheme.inversePrimary)
-                        ){
+                        ) {
 
                         }
                     }
