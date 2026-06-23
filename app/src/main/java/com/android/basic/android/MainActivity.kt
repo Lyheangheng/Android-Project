@@ -4,11 +4,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import com.android.basic.android.component.ScreenBadge
 import com.android.basic.android.navigation.Navigation
 import com.android.basic.android.ui.theme.BaseTheme
-import com.android.basic.android.util.LoadingScreen
-import com.android.basic.android.util.LoadingUtil
 
 
 class MainActivity : ComponentActivity() {
@@ -19,10 +16,10 @@ class MainActivity : ComponentActivity() {
             // This controls which screen is shown on start
 //                ScreenHorizontalPager()
 //                ScreenBadge()
-            BaseTheme() {
-                if(LoadingUtil.isLoading){
-                    LoadingScreen()
-                }
+//            BaseTheme() {
+//                if(LoadingUtil.isLoading){
+//                    LoadingScreen()
+//                }
 //                SpotifyUI()
 //                ScreenRadioButton()
 //                ScreenBottomSheet()
@@ -39,7 +36,7 @@ class MainActivity : ComponentActivity() {
 //                UserProfileScreen()
 //                ScreenBadge()
                 Navigation()
-            }
+//            }
         }
     }
 }

@@ -3,6 +3,8 @@ package com.android.basic.android.feature.home
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -20,6 +22,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -83,27 +86,43 @@ fun HomeScreen(
                         count = state.data.size,
                         key = { index -> state.data[index].id })
                     { index ->
-                        Column(
+                        Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(horizontal = 8.dp)
                                 .clickable(
                                     onClick = { onClickItem(state.data[index].route) }
                                 ),
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Text(
+                            Column(
                                 modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(36.dp),
-                                text = state.data[index].title
-                            )
-                            Text(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(36.dp),
-                                text = state.data[index].description
-                            )
-                            HorizontalDivider()
+                                    .padding(start = 8.dp)
+                                    .weight(1f),
+                                verticalArrangement = Arrangement.Center,
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Text(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(36.dp),
+                                    text = state.data[index].title
+                                )
+                                Text(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(36.dp),
+                                    text = state.data[index].description
+                                )
+                                HorizontalDivider()
+                            }
+                            IconButton(
+                                onClick = { onClickItem(state.data[index].route) }
+                            ) {
+                             Icon(
+                                 painterResource(R.drawable.ic_arrow_forward_ios_24),
+                                 null
+                             )
+                            }
                         }
                     }
                 }
