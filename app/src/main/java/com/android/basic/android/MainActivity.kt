@@ -6,6 +6,8 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import com.android.basic.android.navigation.Navigation
 import com.android.basic.android.ui.theme.BaseTheme
+import com.android.basic.android.util.LoadingScreen
+import com.android.basic.android.util.LoadingUtil
 
 
 class MainActivity : ComponentActivity() {
@@ -17,9 +19,9 @@ class MainActivity : ComponentActivity() {
 //                ScreenHorizontalPager()
 //                ScreenBadge()
 //            BaseTheme() {
-//                if(LoadingUtil.isLoading){
-//                    LoadingScreen()
-//                }
+                if(LoadingUtil.isLoading){
+                    LoadingScreen()
+                }
 //                SpotifyUI()
 //                ScreenRadioButton()
 //                ScreenBottomSheet()

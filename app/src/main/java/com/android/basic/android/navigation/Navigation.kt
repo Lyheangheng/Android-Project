@@ -24,6 +24,7 @@ import com.android.basic.android.feature.loadingAndProgress.ScreenLoadingAndProg
 import com.android.basic.android.feature.navigationBar.ScreenNavigationBar
 import com.android.basic.android.feature.navigationDrawer.HomeScreen1
 import com.android.basic.android.feature.navigationDrawer.ScreenNavigationDrawer
+import com.android.basic.android.feature.profile.ScreenProfile
 import com.android.basic.android.feature.singleChoiceSegmentedButton.ScreenSegmentedButton
 import com.android.basic.android.feature.slider.ScreenSlider
 import com.android.basic.android.feature.slider.ScreenSliderHomework
@@ -34,177 +35,192 @@ import com.android.basic.android.feature.textFields.ScreenTextFields
 import com.android.basic.android.feature.toolBar.ScreenToolBar
 import com.android.basic.android.feature.toolTips.ScreenToolTips
 import com.android.basic.android.feature.topAppBar.ScreenTopAppBar
+import kotlinx.serialization.Serializable
 
-data object HomeScreen
-data object SnackBarScreen
-data object ScreenAlertDialog
-data object ScreenBadge
-data object ScreenBottomSheet
-data object ScreenCard
-data object ScreenCarousel
-data object ScreenCheckBox
-data object ScreenChip
-data object ScreenDatePicker
-data object ScreenDialogFullScreen
-data object ScreenIconButton
-data object ScreenLoadingAndProgressIndicators
-data object ScreenNavigationBar
-data object ScreenNavigationDrawer
-data object ScreenRadioButton
-data object ScreenSingleChoiceSegmentedButton
-data object ScreenSlider
-data object ScreenSwitch
-data object ScreenTabs
-data object ScreenTextFields
-data object ScreenToolBar
-data object ScreenToolTips
-data object ScreenTopAppBar
-data object ScreenFloatingBottomBar
-data object ScreenFloatingBottomBarNew
-data object ScreenSliderNew
+data object HomeScreenRoute
+data object SnackBarScreenRoute
+data object ScreenAlertDialogRoute
+data object ScreenBadgeRoute
+data object ScreenBottomSheetRoute
+data object ScreenCardRoute
+data object ScreenCarouselRoute
+data object ScreenCheckBoxRoute
+data object ScreenChipRoute
+data object ScreenDatePickerRoute
+data object ScreenDialogFullScreenRoute
+data object ScreenIconButtonRoute
+data object ScreenLoadingAndProgressIndicatorsRoute
+data object ScreenNavigationBarRoute
+data object ScreenNavigationDrawerRoute
+data object ScreenRadioButtonRoute
+data object ScreenSingleChoiceSegmentedButtonRoute
+data object ScreenSliderRoute
+data object ScreenSwitchRoute
+data object ScreenTabsRoute
+data object ScreenTextFieldsRoute
+data object ScreenToolBarRoute
+data object ScreenToolTipsRoute
+data object ScreenTopAppBarRoute
+data object ScreenFloatingBottomBarRoute
+data object ScreenFloatingBottomBarNewRoute
+data object ScreenSliderNewRoute
+
+@Serializable
+data class UserProfile(
+    val id: Int,
+)
 
 @Composable
 fun Navigation() {
-    val backStack = remember { mutableStateListOf<Any>(HomeScreen) }
+    val backStack = remember { mutableStateListOf<Any>(HomeScreenRoute) }
     val onBack: () -> Unit = { backStack.removeLastOrNull() }
     NavDisplay(
         backStack = backStack,
         onBack = { backStack.removeLastOrNull() },
         entryProvider = { key ->
             when (key) {
-                is HomeScreen -> NavEntry(key) {
+                is HomeScreenRoute -> NavEntry(key) {
                     HomeScreen(
                         onClickItem = { key ->
                             backStack.add(key)
+                        },
+                        onClickProfile = { id ->
+                            backStack.add(UserProfile(id))
                         }
                     )
                 }
-                is ScreenAlertDialog -> NavEntry(key) {
+                is UserProfile -> NavEntry(key) {
+                    ScreenProfile(
+                        onBack = onBack,
+                        id = key.id
+                    )
+                }
+                is ScreenAlertDialogRoute -> NavEntry(key) {
                     ScreenAlertDialog(
                         onBack = onBack
                     )
                 }
-                is ScreenBadge -> NavEntry(key) {
+                is ScreenBadgeRoute -> NavEntry(key) {
                     ScreenBadge(
                         onBack = onBack
                     )
                 }
-                is SnackBarScreen -> NavEntry(key) {
+                is SnackBarScreenRoute -> NavEntry(key) {
                     ScreenSnackBar(
                         onBack = onBack
                     )
                 }
-                is ScreenBottomSheet -> NavEntry(key) {
+                is ScreenBottomSheetRoute -> NavEntry(key) {
                     ScreenBottomSheet(
                         onBack = onBack
                     )
                 }
-                is ScreenCard -> NavEntry(key){
+                is ScreenCardRoute -> NavEntry(key){
                     ScreenCardAndHomeWork1(
                         onBack = onBack
                     )
                 }
-                is ScreenCarousel -> NavEntry(key){
+                is ScreenCarouselRoute -> NavEntry(key){
                     ScreenCarousel(
                         onBack = onBack
                     )
                 }
-                is ScreenCheckBox -> NavEntry(key){
+                is ScreenCheckBoxRoute -> NavEntry(key){
                     ScreenCheckBox(
                         onBack = onBack
                     )
                 }
-                is ScreenChip -> NavEntry(key){
+                is ScreenChipRoute -> NavEntry(key){
                     ScreenChip(
                         onBack = onBack
                     )
                 }
-                is ScreenDatePicker -> NavEntry(key){
+                is ScreenDatePickerRoute -> NavEntry(key){
                     ScreenDatePicker(
                         onBack = onBack
                     )
                 }
-                is ScreenDialogFullScreen -> NavEntry(key){
+                is ScreenDialogFullScreenRoute -> NavEntry(key){
                     ScreenDialogFullScreen(
                         onBack = onBack
                     )
                 }
-                is ScreenIconButton -> NavEntry(key){
+                is ScreenIconButtonRoute -> NavEntry(key){
                     ScreenIconButtons(
                         onBack = onBack
                     )
                 }
-                is ScreenNavigationBar -> NavEntry(key){
+                is ScreenNavigationBarRoute -> NavEntry(key){
                     ScreenNavigationBar(
                         onBack = onBack
                     )
                 }
-                is ScreenLoadingAndProgressIndicators -> NavEntry(key){
+                is ScreenLoadingAndProgressIndicatorsRoute -> NavEntry(key){
                     ScreenLoadingAndProgressIndicators(
                         onBack = onBack
                     )
                 }
-                is ScreenNavigationDrawer -> NavEntry(key){
+                is ScreenNavigationDrawerRoute -> NavEntry(key){
                     ScreenNavigationDrawer(
                         { HomeScreen1(onBack)}, onBack
                     )
                 }
-                is ScreenRadioButton -> NavEntry(key){
+                is ScreenRadioButtonRoute -> NavEntry(key){
                     ScreenRadioButton(
                         onBack = onBack
                     )
                 }
-                is ScreenSingleChoiceSegmentedButton -> NavEntry(key){
+                is ScreenSingleChoiceSegmentedButtonRoute -> NavEntry(key){
                     ScreenSegmentedButton(
                         onBack = onBack
                     )
                 }
-                is ScreenSlider -> NavEntry(key){
+                is ScreenSliderRoute -> NavEntry(key){
                     ScreenSlider(
                         onBack = onBack
                     )
                 }
-                is ScreenSwitch -> NavEntry(key){
+                is ScreenSwitchRoute -> NavEntry(key){
                     ScreenSwitch(
                         onBack = onBack
                     )
                 }
-                is ScreenTabs -> NavEntry(key){
+                is ScreenTabsRoute -> NavEntry(key){
                     ScreenTabs(
                         onBack = onBack
                     )
                 }
-                is ScreenTextFields -> NavEntry(key){
+                is ScreenTextFieldsRoute -> NavEntry(key){
                     ScreenTextFields(
                         onBack = onBack
                     )
                 }
-                is ScreenToolBar -> NavEntry(key){
+                is ScreenToolBarRoute -> NavEntry(key){
                     ScreenToolBar(
                         onBack = onBack
                     )
                 }
-                is ScreenToolTips -> NavEntry(key){
+                is ScreenToolTipsRoute -> NavEntry(key){
                     ScreenToolTips(
                         onBack = onBack
                     )
                 }
-                is ScreenTopAppBar -> NavEntry(key){
+                is ScreenTopAppBarRoute -> NavEntry(key){
                     ScreenTopAppBar(
                         onBack = onBack
                     )
                 }
-                is ScreenFloatingBottomBar -> NavEntry(key){
+                is ScreenFloatingBottomBarRoute -> NavEntry(key){
                     ScreenFloatingBottomBar(
                         onBack = onBack
                     )
                 }
-                is ScreenFloatingBottomBarNew -> NavEntry(key){
+                is ScreenFloatingBottomBarNewRoute -> NavEntry(key){
                     ScreenFloatingBottomBar1(
                         onBack = onBack
                     )
                 }
-                is ScreenSliderNew -> NavEntry(key){
+                is ScreenSliderNewRoute -> NavEntry(key){
                     ScreenSliderHomework(
                         onBack = onBack
                     )

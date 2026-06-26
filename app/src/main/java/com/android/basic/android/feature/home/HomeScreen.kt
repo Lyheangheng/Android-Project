@@ -38,6 +38,7 @@ import com.android.basic.android.util.LoadingUtil
 fun HomeScreen(
     homeVM: HomeVM = HomeVM(),
     onClickItem: (Any) -> Unit,
+    onClickProfile: (id: Int) -> Unit
 ) {
 
     val componentList by homeVM.componentList.collectAsStateWithLifecycle()
@@ -57,10 +58,12 @@ fun HomeScreen(
             CenterAlignedTopAppBar(
                 navigationIcon = {
                     IconButton(
-                        onClick = {}
+                        onClick = {
+                            onClickProfile(2)
+                        }
                     ) {
                         Icon(
-                            painter = painterResource(R.drawable.ic_arrow_back_24),
+                            painter = painterResource(R.drawable.ic_profile_24),
                             contentDescription = null
                         )
                     }
@@ -140,7 +143,8 @@ fun HomeScreen(
 fun HomeScreenPreview() {
     BaseTheme {
         HomeScreen(
-            onClickItem = {}
+            onClickItem = {},
+            onClickProfile = {}
         )
     }
 }
