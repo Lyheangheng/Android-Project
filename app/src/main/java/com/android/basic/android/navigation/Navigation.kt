@@ -1,5 +1,7 @@
 package com.android.basic.android.navigation
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
@@ -24,6 +26,7 @@ import com.android.basic.android.feature.loadingAndProgress.ScreenLoadingAndProg
 import com.android.basic.android.feature.navigationBar.ScreenNavigationBar
 import com.android.basic.android.feature.navigationDrawer.HomeScreen1
 import com.android.basic.android.feature.navigationDrawer.ScreenNavigationDrawer
+import com.android.basic.android.feature.notification.ScreenNotificationPermisson
 import com.android.basic.android.feature.profile.ScreenProfile
 import com.android.basic.android.feature.singleChoiceSegmentedButton.ScreenSegmentedButton
 import com.android.basic.android.feature.slider.ScreenSlider
@@ -64,12 +67,14 @@ data object ScreenTopAppBarRoute
 data object ScreenFloatingBottomBarRoute
 data object ScreenFloatingBottomBarNewRoute
 data object ScreenSliderNewRoute
+data object NotificationPermissionRoute
 
 @Serializable
 data class UserProfile(
     val id: Int,
 )
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Composable
 fun Navigation() {
     val backStack = remember { mutableStateListOf<Any>(HomeScreenRoute) }
@@ -223,6 +228,11 @@ fun Navigation() {
                 is ScreenSliderNewRoute -> NavEntry(key){
                     ScreenSliderHomework(
                         onBack = onBack
+                    )
+                }
+                is NotificationPermissionRoute -> NavEntry(key) {
+                    ScreenNotificationPermisson(
+                        onBack = { backStack.removeLastOrNull() }
                     )
                 }
                 else -> NavEntry(Unit) { Text(text = "Unknown Route") }

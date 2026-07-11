@@ -17,6 +17,7 @@ runtime = "1.11.2"
 
 nav3Core = "1.1.2"
 kotlinSerialization = "2.2.21"
+accompanist = "0.34.0"
 
 
 
@@ -35,6 +36,8 @@ androidx-compose-ui = { group = "androidx.compose.ui", name = "ui" }
 androidx-navigation3-runtime = { module = "androidx.navigation3:navigation3-runtime", version.ref = "nav3Core" }
 androidx-navigation3-ui = { module = "androidx.navigation3:navigation3-ui", version.ref = "nav3Core" }
 
+
+com-google-accompanist-permissions = { group = "com.google.accompanist", name = "accompanist-permissions", version = "0.37.3" }
 
 
 androidx-compose-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }

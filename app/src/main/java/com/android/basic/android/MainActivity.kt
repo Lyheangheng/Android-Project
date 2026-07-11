@@ -1,9 +1,11 @@
 package com.android.basic.android
 
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.annotation.RequiresApi
 import com.android.basic.android.navigation.Navigation
 import com.android.basic.android.ui.theme.BaseTheme
 import com.android.basic.android.util.LoadingScreen
@@ -11,6 +13,7 @@ import com.android.basic.android.util.LoadingUtil
 
 
 class MainActivity : ComponentActivity() {
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()

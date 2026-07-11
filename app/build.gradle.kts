@@ -1,24 +1,18 @@
 
-
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
-
-
-
     alias(libs.plugins.jetbrains.kotlin.serialization)
 }
 
 android {
     namespace = "com.android.basic.android"
-    compileSdk {
-        version = release(36)
-    }
+    compileSdk = 36 // Using 35 as it's the current stable API for Android 15
 
     defaultConfig {
         applicationId = "com.android.basic.android"
         minSdk = 29
-        targetSdk = 36
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
@@ -41,7 +35,6 @@ android {
     buildFeatures {
         compose = true
     }
-
 }
 
 dependencies {
@@ -55,9 +48,11 @@ dependencies {
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.ui)
 
-
     implementation(libs.androidx.navigation3.ui)
     implementation(libs.androidx.navigation3.runtime)
+
+    //permission
+    implementation(libs.com.google.accompanist.permissions)
 
 
     implementation(libs.androidx.room.ktx)
@@ -71,10 +66,6 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 
-
-
-    // added for Product viewModel test
     implementation("io.coil-kt.coil3:coil-compose:3.3.0")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1")
-
 }

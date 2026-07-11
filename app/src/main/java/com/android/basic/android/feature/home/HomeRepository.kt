@@ -1,6 +1,7 @@
 package com.android.basic.android.feature.home
 
 import com.android.basic.android.model.ComponentModel
+import com.android.basic.android.navigation.NotificationPermissionRoute
 import com.android.basic.android.navigation.ScreenAlertDialogRoute
 import com.android.basic.android.navigation.ScreenBadgeRoute
 import com.android.basic.android.navigation.ScreenBottomSheetRoute
@@ -188,6 +189,12 @@ class HomeRepository {
             title = "Slider New Screen",
             description = "Click to go to Slider New Screen",
             route = ScreenSliderNewRoute
+        ),
+        ComponentModel(
+            id = 27,
+            title = "Notification Permission Screen",
+            description = "Click to go to Notification Permission Screen",
+            route = NotificationPermissionRoute
         ),
     )
 
