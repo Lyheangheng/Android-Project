@@ -55,6 +55,27 @@ dependencies {
     implementation(libs.com.google.accompanist.permissions)
 
 
+    // Retrofit Client
+    implementation(libs.squareup.retrofit2.retrofit)
+    implementation(libs.squareup.retrofit2.converter.gson)
+
+    // OkHttp logging interceptor (optional, great for debugging)
+    implementation(libs.squareup.okhttp3.logging.interceptor)
+//
+    // Coroutines
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
+//
+//    // ViewModel + LiveData
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.3")
+
+    // Json Converter
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
+    implementation("com.squareup.retrofit2:converter-kotlinx-serialization:3.0.0")
+
+    //Gson Converter
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+
+
     implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.compose.runtime)

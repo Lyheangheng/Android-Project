@@ -38,203 +38,206 @@ import com.android.basic.android.feature.textFields.ScreenTextFields
 import com.android.basic.android.feature.toolBar.ScreenToolBar
 import com.android.basic.android.feature.toolTips.ScreenToolTips
 import com.android.basic.android.feature.topAppBar.ScreenTopAppBar
+import com.android.basic.android.feature.userApi.ScreenUserApi
 import kotlinx.serialization.Serializable
 
-data object HomeScreenRoute
-data object SnackBarScreenRoute
-data object ScreenAlertDialogRoute
-data object ScreenBadgeRoute
-data object ScreenBottomSheetRoute
-data object ScreenCardRoute
-data object ScreenCarouselRoute
-data object ScreenCheckBoxRoute
-data object ScreenChipRoute
-data object ScreenDatePickerRoute
-data object ScreenDialogFullScreenRoute
-data object ScreenIconButtonRoute
-data object ScreenLoadingAndProgressIndicatorsRoute
-data object ScreenNavigationBarRoute
-data object ScreenNavigationDrawerRoute
-data object ScreenRadioButtonRoute
-data object ScreenSingleChoiceSegmentedButtonRoute
-data object ScreenSliderRoute
-data object ScreenSwitchRoute
-data object ScreenTabsRoute
-data object ScreenTextFieldsRoute
-data object ScreenToolBarRoute
-data object ScreenToolTipsRoute
-data object ScreenTopAppBarRoute
-data object ScreenFloatingBottomBarRoute
-data object ScreenFloatingBottomBarNewRoute
-data object ScreenSliderNewRoute
-data object NotificationPermissionRoute
-
-@Serializable
-data class UserProfile(
-    val id: Int,
-)
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Composable
 fun Navigation() {
-    val backStack = remember { mutableStateListOf<Any>(HomeScreenRoute) }
+    val backStack = remember { mutableStateListOf<Any>(NavigationKey.HomeScreenRoute) }
     val onBack: () -> Unit = { backStack.removeLastOrNull() }
     NavDisplay(
         backStack = backStack,
         onBack = { backStack.removeLastOrNull() },
         entryProvider = { key ->
             when (key) {
-                is HomeScreenRoute -> NavEntry(key) {
+                is NavigationKey.HomeScreenRoute -> NavEntry(key) {
                     HomeScreen(
                         onClickItem = { key ->
                             backStack.add(key)
                         },
                         onClickProfile = { id ->
-                            backStack.add(UserProfile(id))
+                            backStack.add(NavigationKey.UserProfile(id))
                         }
                     )
                 }
-                is UserProfile -> NavEntry(key) {
+
+                is NavigationKey.UserApiScreenRoute -> NavEntry(key) {
+                    ScreenUserApi(
+                        onBack = { backStack.removeLastOrNull() }
+                    )
+                }
+
+                is NavigationKey.UserProfile -> NavEntry(key) {
                     ScreenProfile(
                         onBack = onBack,
                         id = key.id
                     )
                 }
-                is ScreenAlertDialogRoute -> NavEntry(key) {
+
+                is NavigationKey.ScreenAlertDialogRoute -> NavEntry(key) {
                     ScreenAlertDialog(
                         onBack = onBack
                     )
                 }
-                is ScreenBadgeRoute -> NavEntry(key) {
+
+                is NavigationKey.ScreenBadgeRoute -> NavEntry(key) {
                     ScreenBadge(
                         onBack = onBack
                     )
                 }
-                is SnackBarScreenRoute -> NavEntry(key) {
+
+                is NavigationKey.SnackBarScreenRoute -> NavEntry(key) {
                     ScreenSnackBar(
                         onBack = onBack
                     )
                 }
-                is ScreenBottomSheetRoute -> NavEntry(key) {
+
+                is NavigationKey.ScreenBottomSheetRoute -> NavEntry(key) {
                     ScreenBottomSheet(
                         onBack = onBack
                     )
                 }
-                is ScreenCardRoute -> NavEntry(key){
+
+                is NavigationKey.ScreenCardRoute -> NavEntry(key) {
                     ScreenCardAndHomeWork1(
                         onBack = onBack
                     )
                 }
-                is ScreenCarouselRoute -> NavEntry(key){
+
+                is NavigationKey.ScreenCarouselRoute -> NavEntry(key) {
                     ScreenCarousel(
                         onBack = onBack
                     )
                 }
-                is ScreenCheckBoxRoute -> NavEntry(key){
+
+                is NavigationKey.ScreenCheckBoxRoute -> NavEntry(key) {
                     ScreenCheckBox(
                         onBack = onBack
                     )
                 }
-                is ScreenChipRoute -> NavEntry(key){
+
+                is NavigationKey.ScreenChipRoute -> NavEntry(key) {
                     ScreenChip(
                         onBack = onBack
                     )
                 }
-                is ScreenDatePickerRoute -> NavEntry(key){
+
+                is NavigationKey.ScreenDatePickerRoute -> NavEntry(key) {
                     ScreenDatePicker(
                         onBack = onBack
                     )
                 }
-                is ScreenDialogFullScreenRoute -> NavEntry(key){
+
+                is NavigationKey.ScreenDialogFullScreenRoute -> NavEntry(key) {
                     ScreenDialogFullScreen(
                         onBack = onBack
                     )
                 }
-                is ScreenIconButtonRoute -> NavEntry(key){
+
+                is NavigationKey.ScreenIconButtonRoute -> NavEntry(key) {
                     ScreenIconButtons(
                         onBack = onBack
                     )
                 }
-                is ScreenNavigationBarRoute -> NavEntry(key){
+
+                is NavigationKey.ScreenNavigationBarRoute -> NavEntry(key) {
                     ScreenNavigationBar(
                         onBack = onBack
                     )
                 }
-                is ScreenLoadingAndProgressIndicatorsRoute -> NavEntry(key){
+
+                is NavigationKey.ScreenLoadingAndProgressIndicatorsRoute -> NavEntry(key) {
                     ScreenLoadingAndProgressIndicators(
                         onBack = onBack
                     )
                 }
-                is ScreenNavigationDrawerRoute -> NavEntry(key){
+
+                is NavigationKey.ScreenNavigationDrawerRoute -> NavEntry(key) {
                     ScreenNavigationDrawer(
-                        { HomeScreen1(onBack)}, onBack
+                        { HomeScreen1(onBack) }, onBack
                     )
                 }
-                is ScreenRadioButtonRoute -> NavEntry(key){
+
+                is NavigationKey.ScreenRadioButtonRoute -> NavEntry(key) {
                     ScreenRadioButton(
                         onBack = onBack
                     )
                 }
-                is ScreenSingleChoiceSegmentedButtonRoute -> NavEntry(key){
+
+                is NavigationKey.ScreenSingleChoiceSegmentedButtonRoute -> NavEntry(key) {
                     ScreenSegmentedButton(
                         onBack = onBack
                     )
                 }
-                is ScreenSliderRoute -> NavEntry(key){
+
+                is NavigationKey.ScreenSliderRoute -> NavEntry(key) {
                     ScreenSlider(
                         onBack = onBack
                     )
                 }
-                is ScreenSwitchRoute -> NavEntry(key){
+
+                is NavigationKey.ScreenSwitchRoute -> NavEntry(key) {
                     ScreenSwitch(
                         onBack = onBack
                     )
                 }
-                is ScreenTabsRoute -> NavEntry(key){
+
+                is NavigationKey.ScreenTabsRoute -> NavEntry(key) {
                     ScreenTabs(
                         onBack = onBack
                     )
                 }
-                is ScreenTextFieldsRoute -> NavEntry(key){
+
+                is NavigationKey.ScreenTextFieldsRoute -> NavEntry(key) {
                     ScreenTextFields(
                         onBack = onBack
                     )
                 }
-                is ScreenToolBarRoute -> NavEntry(key){
+
+                is NavigationKey.ScreenToolBarRoute -> NavEntry(key) {
                     ScreenToolBar(
                         onBack = onBack
                     )
                 }
-                is ScreenToolTipsRoute -> NavEntry(key){
+
+                is NavigationKey.ScreenToolTipsRoute -> NavEntry(key) {
                     ScreenToolTips(
                         onBack = onBack
                     )
                 }
-                is ScreenTopAppBarRoute -> NavEntry(key){
+
+                is NavigationKey.ScreenTopAppBarRoute -> NavEntry(key) {
                     ScreenTopAppBar(
                         onBack = onBack
                     )
                 }
-                is ScreenFloatingBottomBarRoute -> NavEntry(key){
+
+                is NavigationKey.ScreenFloatingBottomBarRoute -> NavEntry(key) {
                     ScreenFloatingBottomBar(
                         onBack = onBack
                     )
                 }
-                is ScreenFloatingBottomBarNewRoute -> NavEntry(key){
+
+                is NavigationKey.ScreenFloatingBottomBarNewRoute -> NavEntry(key) {
                     ScreenFloatingBottomBar1(
                         onBack = onBack
                     )
                 }
-                is ScreenSliderNewRoute -> NavEntry(key){
+
+                is NavigationKey.ScreenSliderNewRoute -> NavEntry(key) {
                     ScreenSliderHomework(
                         onBack = onBack
                     )
                 }
-                is NotificationPermissionRoute -> NavEntry(key) {
+
+                is NavigationKey.NotificationPermissionRoute -> NavEntry(key) {
                     ScreenNotificationPermisson(
                         onBack = { backStack.removeLastOrNull() }
                     )
                 }
+
                 else -> NavEntry(Unit) { Text(text = "Unknown Route") }
             }
         }

@@ -180,8 +180,8 @@ LaunchedEffect(Unit) {
     }
 }
 
-@Preview(showBackground = false)
+@Preview
 @Composable
-fun ScreenBadgePreview() {
+fun ScreenBadgePreview(){
     ScreenBadge()
 }

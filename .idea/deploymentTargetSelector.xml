@@ -4,6 +4,7 @@
     <selectionStates>
       <SelectionState runConfigName="app">
         <option name="selectionMode" value="DROPDOWN" />
+        <DialogSelection />
       </SelectionState>
       <SelectionState runConfigName="ScreenSegmentedButtonPreview">
         <option name="selectionMode" value="DROPDOWN" />
@@ -17,10 +18,10 @@
       <SelectionState runConfigName="ScreenLoadingAndProgressIndicatorsPreview">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="DetermineIndicatorsPreview">
+      <SelectionState runConfigName="ScreenBadgePreview">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="ScreenBadgePreview">
+      <SelectionState runConfigName="ScreenNavigationBarPreview">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>
