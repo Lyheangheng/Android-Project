@@ -1,42 +1,40 @@
 package com.android.basic.android.feature.userApi
 
-import androidx.compose.foundation.gestures.detectDragGestures
-import androidx.compose.foundation.layout.Arrangement
+import android.R.attr.name
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.BottomAppBarDefaults
+import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.PlainTooltip
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TooltipBox
-import androidx.compose.material3.TooltipDefaults
+import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberBottomAppBarState
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.rememberTooltipState
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -44,36 +42,72 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.basic.android.R
-import com.android.basic.android.TooltipViewModel
+import com.android.basic.android.dataModel.UserResponse
 import com.android.basic.android.model.BaseUiState
-import com.android.basic.android.model.ReceiverAccountModel
 import com.android.basic.android.ui.theme.BaseTheme
 import com.android.basic.android.util.LoadingUtil
-import kotlinx.coroutines.launch
-import kotlin.math.roundToInt
+import android.util.Patterns
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Shapes
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import com.android.basic.android.util.ValidEmail
+import java.nio.file.WatchEvent
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ScreenUserApi(
-    onBack: () -> Unit = {},
-    userApiVM: UserApiVM = viewModel()
+    onBack: () -> Unit = {}, userApiVM: UserApiVM = viewModel()
 ) {
 
-    val userUiState by userApiVM.userListUiState.collectAsStateWithLifecycle()
 
+    val userUiState by userApiVM.userListUiState.collectAsStateWithLifecycle()
+    val createUserState by userApiVM.createUserUiState.collectAsStateWithLifecycle()
+
+
+    val scrollBehavior =
+        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
+
+    val bottomBarScrollBehavior =
+        BottomAppBarDefaults.exitAlwaysScrollBehavior(rememberBottomAppBarState())
+
+
+    val scope = rememberCoroutineScope()
+    val toolTipState = rememberTooltipState()
+    val toolTipState1 = rememberTooltipState()
+
+    var name by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
+
+    val sheetState = rememberModalBottomSheetState()
+    var showBottomSheet by remember { mutableStateOf(false) }
+
+    var userToEdit by remember { mutableStateOf<UserResponse?>(null) }
+
+
+    LaunchedEffect(Unit) {
+        userApiVM.getUserList()
+    }
 
     LaunchedEffect(userUiState) {
         when (val state = userUiState) {
             is BaseUiState.Loading -> LoadingUtil.showLoading()
-            is BaseUiState.Success -> LoadingUtil.hideLoading()
+            is BaseUiState.Success -> {
+                LoadingUtil.hideLoading()
+            }
+
             is BaseUiState.Error -> {
                 LoadingUtil.hideLoading()
                 println(state.message)
@@ -83,39 +117,44 @@ fun ScreenUserApi(
         }
     }
 
-    val scrollBehavior =
-        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
+    LaunchedEffect(createUserState) {
+        when (val state = createUserState) {
+            is BaseUiState.Loading -> LoadingUtil.showLoading()
+            is BaseUiState.Success -> {
+                LoadingUtil.hideLoading()
+//                userApiVM.getUserList()
+                showBottomSheet = false
+                userApiVM.resetCreateState()
+            }
 
-    val bottomBarScrollBehavior =
-        BottomAppBarDefaults.exitAlwaysScrollBehavior(rememberBottomAppBarState())
+            is BaseUiState.Error -> {
+                LoadingUtil.hideLoading()
+                println(state.message)
+            }
 
-    val scope = rememberCoroutineScope()
-    val toolTipState = rememberTooltipState()
-    val toolTipState1 = rememberTooltipState()
+            else -> {}
+        }
+    }
 
-
-
-
-
-
-
-
-
+    fun createUser() {
+        userApiVM.createUser(
+            name = name, email = email
+        )
+    }
+    fun updateUser(){
+        userApiVM.updateUser(userToEdit!!.id, name,email)
+    }
 
     Scaffold(
         modifier = Modifier
             .nestedScroll(scrollBehavior.nestedScrollConnection)
-            .nestedScroll(bottomBarScrollBehavior.nestedScrollConnection),
-        topBar = {
+            .nestedScroll(bottomBarScrollBehavior.nestedScrollConnection), topBar = {
             CenterAlignedTopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f),
-                ),
-                scrollBehavior = scrollBehavior,
-                title = {
+                ), scrollBehavior = scrollBehavior, title = {
                     Text(
-                        color = MaterialTheme.colorScheme.inversePrimary,
-                        text = "Tool Bars"
+                        color = MaterialTheme.colorScheme.inversePrimary, text = "Tool Bars"
                     )
                 }, navigationIcon = {
                     IconButton(
@@ -140,242 +179,255 @@ fun ScreenUserApi(
                         )
                     }
                 })
-        },
-        bottomBar = {
-            BottomAppBar(
-                scrollBehavior = bottomBarScrollBehavior,
-                actions = {
-                    HorizontalToolBar()
-                },
-                floatingActionButton = {
-                    FloatingActionButton(
-                        elevation = FloatingActionButtonDefaults.elevation(
-                            defaultElevation = 8.dp,
-                        ),
-                        containerColor = MaterialTheme.colorScheme.background,
-                        onClick = {}
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_call_end_24),
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.primary
-                        )
-                    }
-                }
-            )
-        }
-    ) { paddingValue ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValue),
-            contentAlignment = Alignment.Center
-        ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center,
-            ) {
-                TooltipBox(
-                    positionProvider = TooltipDefaults.rememberPlainTooltipPositionProvider(),
-                    state = toolTipState1,
-                    tooltip = {
-                        PlainTooltip {
-                            Text(
-                                ""
-                            )
-                        }
-                    }
+        }, bottomBar = {
+            BottomAppBar(actions = {}, floatingActionButton = {
+                FloatingActionButton(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    onClick = {
+                        userToEdit = null
+                        showBottomSheet = true }
                 ) {
-                    IconButton(
-                        onClick = {
-                        }
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_menu),
-                            contentDescription = null
-                        )
-                    }
+                    Icon(
+                        painterResource(R.drawable.ic_add_24), null
+                    )
                 }
-//                TooltipBox(
-//                    positionProvider = TooltipDefaults.rememberRichTooltipPositionProvider(),
-//                    state = toolTipState,
-//                    tooltip = {
-//                        RichTooltip(
-//                            title = {
-//                                Text(text = "title")
-//                            },
-//                            action = {
-//                                TextButton(
-//                                    shape = MaterialTheme.shapes.small,
-//                                    onClick = {
-//                                        scope.launch {
-//                                            toolTipState.dismiss()
-//                                        }
-//                                    }
-//                                ){
-//                                    Text(text = "Dismiss")
-//                                }
-//                            },
-//                            shape = RoundedCornerShape(8.dp),
-//                            tonalElevation = 2.dp,
-//                            shadowElevation = 8.dp,
-//                        ) {
-//                            Text(text = """
-//                            A RichTooltip displays a tooltip with a title and dismiss action.
-//                            When activated, either by a long-press or hovering over the TooltipBox content with the mouse pointer, the tooltip is displayed for about one second. You can dismiss this tooltip by either tapping elsewhere on the screen or using the dismiss action button.
-//                            When the dismiss action executes, the system launches a coroutine to call tooltipState.dismiss. This verifies the action execution isn't blocked while the tooltip is displayed.
-//                            onClick = coroutineScope.launch { tooltipState.show() } } launches a coroutine to manually show the tooltip using tooltipState.show.
-//                            The action parameter allows for the adding of interactive elements to a tooltip, such as a button.
-//                            The caretSize parameter modifies the size of the tooltip's arrow.
-//                        """.trimIndent())
-//                        }
-//                    }
-//                ) {
-//                    IconButton(
+            })
+        }
+//        bottomBar = {
+//            BottomAppBar(
+//                scrollBehavior = bottomBarScrollBehavior,
+//                actions = {
+//                    HorizontalToolBar()
+//                },
+//                floatingActionButton = {
+//                    FloatingActionButton(
+//                        elevation = FloatingActionButtonDefaults.elevation(
+//                            defaultElevation = 8.dp,
+//                        ),
+//                        containerColor = MaterialTheme.colorScheme.background,
 //                        onClick = {
-//                            scope.launch {
-//                                toolTipState.show()
-//                            }
+//                            createUser()
 //                        }
 //                    ) {
 //                        Icon(
-//                            painter = painterResource(R.drawable.ic_mic_24),
+//                            painter = painterResource(R.drawable.ic_call_end_24),
 //                            contentDescription = null,
+//                            tint = MaterialTheme.colorScheme.primary
 //                        )
 //                    }
 //                }
-            }
-
-
-            // Floating Vertical tool bar
-            FloatingVerticalToolbar()
-        }
-    }
-}
-
-@Composable
-fun FloatingVerticalToolbar() {
-
-    var offsetX by remember { mutableFloatStateOf(0f) }
-    var offsetY by remember { mutableFloatStateOf(0f) }
-
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        contentAlignment = Alignment.BottomStart
-    ) {
-
-        Surface(
-            modifier = Modifier
-                .offset {
-                    IntOffset(
-                        offsetX.roundToInt(),
-                        offsetY.roundToInt()
-                    )
-                }
-                .pointerInput(Unit) {
-                    detectDragGestures { change, dragAmount ->
-                        change.consume()
-                        offsetX += dragAmount.x
-                        offsetY += dragAmount.y
+//            )
+//        }
+    ) { paddingValue ->
+        if (showBottomSheet) {
+            ModalBottomSheet(
+                onDismissRequest = {
+                    showBottomSheet = false
+                }) {
+                Column(
+                    modifier = Modifier.padding(35.dp)
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        TextField(value = name, onValueChange = {
+                            name = it
+                        }, label = {
+                            Text("name")
+                        })
+                    }
+                    Spacer(modifier = Modifier.height(15.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        TextField(
+                            value = email,
+                            onValueChange = {
+                                email = it
+                            },
+                            label = {
+                                Text("email")
+                            },
+                            isError = email.isEmpty() || !ValidEmail.isValidEmail(email)
+                        )
                     }
                 }
-                .width(65.dp),
-            shape = RoundedCornerShape(32.dp),
-            shadowElevation = 8.dp,
-            tonalElevation = 2.dp
-        ) {
-            Column(
-                modifier = Modifier.padding(vertical = 12.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 35.dp)
+                ) {
+                    Button(
+                        modifier = Modifier.fillMaxWidth(),
+                        onClick = {
+                            if(userToEdit == null){
+                                createUser()
+                            }else{
+                                updateUser()
+                                showBottomSheet = false
+                            }
+                        }
+                    ) {
+                        Text(
+                            if (userToEdit == null) "Create" else "Save Changes"
+                        )
+                    }
+                }
+            }
+        }
+        when (val state = userUiState) {
+            is BaseUiState.Success -> {
+                LazyColumn(
+                    contentPadding = paddingValue
+                ) {
+                    items(state.data.size) { index ->
+                        UserItems(
+                            item = state.data[index],
+                            onDeleteClick = { id ->
+                                userApiVM.deleteUser(id)
+                            },
+                            onEditClick = { user ->
+                                userToEdit = user
+                                name = user.name
+                                email = user.email
+                                showBottomSheet = true
+                            }
+                        )
+                    }
+                }
+            }
+
+            else -> {}
+        }
+
+        @Composable
+        fun HorizontalToolBar() {
+            Box(
+                modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
             ) {
+                Surface(
+                    modifier = Modifier.height(60.dp),
+                    shape = RoundedCornerShape(32.dp),
+                    tonalElevation = 2.dp,
+                    shadowElevation = 8.dp,
+                ) {
+                    Row(
+                        modifier = Modifier.padding(horizontal = 16.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
 
-                IconButton(onClick = {}) {
-                    Icon(
-                        painterResource(id = R.drawable.ic_undo_24),
-                        contentDescription = null
-                    )
-                }
-                IconButton(onClick = {}) {
-                    Icon(
-                        painterResource(id = R.drawable.ic_redo_24),
-                        contentDescription = null
-                    )
-                }
-                IconButton(onClick = {}) {
-                    Icon(
-                        painterResource(id = R.drawable.ic_add_24),
-                        contentDescription = null
-                    )
-                }
-                IconButton(onClick = {}) {
-                    Icon(
-                        painterResource(id = R.drawable.ic_text_format_24),
-                        contentDescription = null
-                    )
-                }
-                IconButton(onClick = {}) {
-                    Icon(
-                        painterResource(id = R.drawable.more_vert),
-                        contentDescription = null
-                    )
-                }
+                        IconButton(onClick = {}) {
+                            Icon(
+                                painterResource(id = R.drawable.ic_videocam_off_24),
+                                contentDescription = null
+                            )
+                        }
+                        IconButton(onClick = {}) {
+                            Icon(
+                                painterResource(id = R.drawable.ic_mic_24),
+                                contentDescription = null
+                            )
+                        }
+                        IconButton(onClick = {}) {
+                            Icon(
+                                painterResource(id = R.drawable.ic_front_hand_24),
+                                contentDescription = null
+                            )
+                        }
+                        IconButton(onClick = {}) {
+                            Icon(
+                                painterResource(id = R.drawable.more_vert),
+                                contentDescription = null
+                            )
+                        }
 
+                    }
+                }
             }
         }
     }
 }
 
-
 @Composable
-fun HorizontalToolBar() {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
+fun UserItems(
+    item: UserResponse,
+    onDeleteClick: (Int) -> Unit,
+    onEditClick: (UserResponse) -> Unit
+) {
+
+    var expanded by remember { mutableStateOf(false) }
+    var userToEdit by remember { mutableStateOf<UserResponse?>(null) }
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp)
     ) {
-        Surface(
-            modifier = Modifier
-                .height(60.dp),
-            shape = RoundedCornerShape(32.dp),
-            tonalElevation = 2.dp,
-            shadowElevation = 8.dp,
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Row(
+            Box(
                 modifier = Modifier
-                    .padding(horizontal = 16.dp),
-                verticalAlignment = Alignment.CenterVertically,
+                    .size(50.dp)
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.primaryContainer),
+                contentAlignment = Alignment.Center
             ) {
-
-                IconButton(onClick = {}) {
-                    Icon(
-                        painterResource(id = R.drawable.ic_videocam_off_24),
-                        contentDescription = null
+                Text(item.name.firstOrNull()?.uppercase() ?: "")
+            }
+            Spacer(modifier = Modifier.width(25.dp))
+            Column(
+                modifier = Modifier.weight(1f)
+            ) {
+                Text(text = item.name, style = MaterialTheme.typography.bodyLarge)
+                Text(text = item.email, style = MaterialTheme.typography.bodyMedium)
+            }
+//            Spacer(modifier = Modifier.weight(1f))
+            IconButton(
+                onClick = {
+                    expanded = true
+                }
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.more_vert),
+                    null
+                )
+                DropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = {
+                        expanded = false
+                    }
+                ) {
+                    DropdownMenuItem(
+                        onClick = {
+                            onEditClick(item)
+                            expanded = false
+                        },
+                        text = {
+                            Text(
+                                text = "Edit",
+                                color = Color.Blue
+                            )
+                        }
+                    )
+                    DropdownMenuItem(
+                        text = {
+                            Text(
+                                text = "Delete",
+                                color = MaterialTheme.colorScheme.error
+                            )
+                        },
+                        onClick = {
+                            onDeleteClick(item.id)
+                            expanded = false
+                        }
                     )
                 }
-                IconButton(onClick = {}) {
-                    Icon(
-                        painterResource(id = R.drawable.ic_mic_24),
-                        contentDescription = null
-                    )
-                }
-                IconButton(onClick = {}) {
-                    Icon(
-                        painterResource(id = R.drawable.ic_front_hand_24),
-                        contentDescription = null
-                    )
-                }
-                IconButton(onClick = {}) {
-                    Icon(
-                        painterResource(id = R.drawable.more_vert),
-                        contentDescription = null
-                    )
-                }
-
             }
         }
+        Spacer(Modifier.height(5.dp))
+        HorizontalDivider()
     }
 }
 
@@ -383,7 +435,5 @@ fun HorizontalToolBar() {
 @Preview(showBackground = false)
 @Composable
 fun ScreenUserApiPreview() {
-    BaseTheme {
-        ScreenUserApi()
-    }
+    ScreenUserApi()
 }

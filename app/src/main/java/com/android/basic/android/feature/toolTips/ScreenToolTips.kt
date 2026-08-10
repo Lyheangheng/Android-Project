@@ -50,6 +50,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.basic.android.R
 import com.android.basic.android.TooltipViewModel
 import com.android.basic.android.model.ReceiverAccountModel
@@ -74,7 +75,7 @@ fun ScreenToolTips(onBack : () -> Unit = {}) {
 
 
 
-    val tooltipViewModel: TooltipViewModel = TooltipViewModel()
+    val tooltipViewModel: TooltipViewModel = viewModel()
     val accountInfo by tooltipViewModel.receiverAccount.collectAsStateWithLifecycle()
     var receiverAccount by remember { mutableStateOf<ReceiverAccountModel?>(null) }
 
