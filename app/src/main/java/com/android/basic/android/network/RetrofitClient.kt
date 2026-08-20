@@ -23,19 +23,17 @@ object RetrofitClient {
         .addInterceptor(loggingInterceptor)
         .build()
 
-//    private val json = Json{
-//        ignoreUnknownKeys = true
-//    }
-
-    private val gson = GsonBuilder()
-        .setLenient()
-        .create()
+    private val json = Json {
+        ignoreUnknownKeys = true
+        coerceInputValues = true
+        isLenient = true
+    }
 
     val instance: UserApiService by lazy {
         Retrofit.Builder()
             .baseUrl(BASE_URL)
             .client(httpClient)
-            .addConverterFactory(GsonConverterFactory.create(gson))
+            .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
             .build()
             .create(UserApiService::class.java)
     }

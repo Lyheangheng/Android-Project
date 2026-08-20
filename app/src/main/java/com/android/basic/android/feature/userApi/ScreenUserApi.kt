@@ -1,6 +1,6 @@
 package com.android.basic.android.feature.userApi
 
-import android.R.attr.name
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,7 +9,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
@@ -17,8 +20,11 @@ import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.BottomAppBarDefaults
 import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -41,6 +47,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -48,23 +56,11 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.basic.android.R
-import com.android.basic.android.dataModel.UserResponse
 import com.android.basic.android.model.BaseUiState
-import com.android.basic.android.ui.theme.BaseTheme
+import com.android.basic.android.model.responses.UserApiResponse
 import com.android.basic.android.util.LoadingUtil
-import android.util.Patterns
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Shapes
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import com.android.basic.android.util.ValidEmail
-import java.nio.file.WatchEvent
+import kotlinx.serialization.Serializable
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -84,17 +80,16 @@ fun ScreenUserApi(
         BottomAppBarDefaults.exitAlwaysScrollBehavior(rememberBottomAppBarState())
 
 
-    val scope = rememberCoroutineScope()
-    val toolTipState = rememberTooltipState()
-    val toolTipState1 = rememberTooltipState()
-
+//    val scope = rememberCoroutineScope()
+//    val toolTipState = rememberTooltipState()
+//    val toolTipState1 = rememberTooltipState()
     var name by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
 
-    val sheetState = rememberModalBottomSheetState()
+//    val sheetState = rememberModalBottomSheetState()
     var showBottomSheet by remember { mutableStateOf(false) }
 
-    var userToEdit by remember { mutableStateOf<UserResponse?>(null) }
+    var userToEdit by remember { mutableStateOf<UserApiResponse?>(null) }
 
 
     LaunchedEffect(Unit) {
@@ -141,8 +136,9 @@ fun ScreenUserApi(
             name = name, email = email
         )
     }
-    fun updateUser(){
-        userApiVM.updateUser(userToEdit!!.id, name,email)
+
+    fun updateUser() {
+        userApiVM.updateUser(userToEdit!!.id, name, email)
     }
 
     Scaffold(
@@ -179,13 +175,17 @@ fun ScreenUserApi(
                         )
                     }
                 })
-        }, bottomBar = {
+        },
+        bottomBar = {
             BottomAppBar(actions = {}, floatingActionButton = {
                 FloatingActionButton(
                     containerColor = MaterialTheme.colorScheme.primary,
                     onClick = {
                         userToEdit = null
-                        showBottomSheet = true }
+                        name = ""
+                        email = ""
+                        showBottomSheet = true
+                    }
                 ) {
                     Icon(
                         painterResource(R.drawable.ic_add_24), null
@@ -193,31 +193,7 @@ fun ScreenUserApi(
                 }
             })
         }
-//        bottomBar = {
-//            BottomAppBar(
-//                scrollBehavior = bottomBarScrollBehavior,
-//                actions = {
-//                    HorizontalToolBar()
-//                },
-//                floatingActionButton = {
-//                    FloatingActionButton(
-//                        elevation = FloatingActionButtonDefaults.elevation(
-//                            defaultElevation = 8.dp,
-//                        ),
-//                        containerColor = MaterialTheme.colorScheme.background,
-//                        onClick = {
-//                            createUser()
-//                        }
-//                    ) {
-//                        Icon(
-//                            painter = painterResource(R.drawable.ic_call_end_24),
-//                            contentDescription = null,
-//                            tint = MaterialTheme.colorScheme.primary
-//                        )
-//                    }
-//                }
-//            )
-//        }
+
     ) { paddingValue ->
         if (showBottomSheet) {
             ModalBottomSheet(
@@ -260,9 +236,9 @@ fun ScreenUserApi(
                     Button(
                         modifier = Modifier.fillMaxWidth(),
                         onClick = {
-                            if(userToEdit == null){
+                            if (userToEdit == null) {
                                 createUser()
-                            }else{
+                            } else {
                                 updateUser()
                                 showBottomSheet = false
                             }
@@ -288,8 +264,8 @@ fun ScreenUserApi(
                             },
                             onEditClick = { user ->
                                 userToEdit = user
-                                name = user.name
-                                email = user.email
+                                name = user.name ?: ""
+                                email = user.email ?: ""
                                 showBottomSheet = true
                             }
                         )
@@ -348,15 +324,15 @@ fun ScreenUserApi(
     }
 }
 
+
 @Composable
 fun UserItems(
-    item: UserResponse,
-    onDeleteClick: (Int) -> Unit,
-    onEditClick: (UserResponse) -> Unit
+    item: UserApiResponse,
+    onDeleteClick: (String) -> Unit,
+    onEditClick: (UserApiResponse) -> Unit
 ) {
 
     var expanded by remember { mutableStateOf(false) }
-    var userToEdit by remember { mutableStateOf<UserResponse?>(null) }
 
     Column(
         modifier = Modifier
@@ -374,14 +350,15 @@ fun UserItems(
                     .background(MaterialTheme.colorScheme.primaryContainer),
                 contentAlignment = Alignment.Center
             ) {
-                Text(item.name.firstOrNull()?.uppercase() ?: "")
+                val initial = item.name?.firstOrNull()?.uppercase() ?: "?"
+                Text(initial)
             }
             Spacer(modifier = Modifier.width(25.dp))
             Column(
                 modifier = Modifier.weight(1f)
             ) {
-                Text(text = item.name, style = MaterialTheme.typography.bodyLarge)
-                Text(text = item.email, style = MaterialTheme.typography.bodyMedium)
+                Text(text = item.name ?: "", style = MaterialTheme.typography.bodyLarge)
+                Text(text = item.email ?: "", style = MaterialTheme.typography.bodyMedium)
             }
 //            Spacer(modifier = Modifier.weight(1f))
             IconButton(

@@ -2,7 +2,6 @@ package com.android.basic.android.feature.userApi
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.android.basic.android.dataModel.UserResponse
 import com.android.basic.android.model.BaseUiState
 import com.android.basic.android.model.request.UserApiRequest
 import com.android.basic.android.model.responses.UserApiResponse
@@ -13,7 +12,7 @@ import kotlinx.coroutines.launch
 
 class UserApiVM : ViewModel() {
 
-    private val _userListUiState: MutableStateFlow<BaseUiState<List<UserResponse>>> =
+    private val _userListUiState: MutableStateFlow<BaseUiState<List<UserApiResponse>>> =
         MutableStateFlow(
             BaseUiState.None
         )
@@ -52,11 +51,11 @@ class UserApiVM : ViewModel() {
                 if (response.isSuccessful) {
                     val newUserApi = response.body()!!
 
-                    // 1. Create a UserResponse object from the API response
-                    val newUser = UserResponse(
+                    // 1. Create a UserResponse object using the data we sent + the ID from the server
+                    val newUser = UserApiResponse(
                         id = newUserApi.id,
-                        name = newUserApi.name,
-                        email = newUserApi.email
+                        name = name,
+                        email = email
                     )
 
                     // 2. Get the current list and add the new user to it
@@ -64,8 +63,8 @@ class UserApiVM : ViewModel() {
                         (_userListUiState.value as? BaseUiState.Success)?.data ?: emptyList()
                     _userListUiState.value = BaseUiState.Success(listOf(newUser) + currentList)
 
-                    // 3. Mark the creation as successful
-                    _createUserUiState.emit(BaseUiState.Success(newUserApi))
+                    // 3. Mark the creation as successful with the full user object
+                    _createUserUiState.emit(BaseUiState.Success(newUser))
                 } else {
                     _createUserUiState.emit(BaseUiState.Error(message = "Unknown Errors"))
                 }
@@ -76,7 +75,7 @@ class UserApiVM : ViewModel() {
         }
     }
 
-    fun deleteUser(userId: Int) {
+    fun deleteUser(userId: String) {
         viewModelScope.launch {
             try {
                 val response = RetrofitClient.instance.deleteUser(userId)
@@ -95,22 +94,20 @@ class UserApiVM : ViewModel() {
         }
     }
 
-    fun updateUser(id: Int, name: String, email: String) {
+    fun updateUser(id: String, name: String, email: String) {
         viewModelScope.launch {
             try {
                 val body = UserApiRequest(name, email)
                 val response = RetrofitClient.instance.updateUser(id, body)
 
                 if (response.isSuccessful) {
-                    val updatedUserApi = response.body()!!
-
                     val currentList =
                         (_userListUiState.value as? BaseUiState.Success)?.data ?: emptyList()
                     val updatedList = currentList.map {
-                        if (it.id == id) UserResponse(
-                            id,
-                            email = updatedUserApi.email,
-                            name = updatedUserApi.name
+                        if (it.id == id) UserApiResponse(
+                            id = id,
+                            name = name,
+                            email = email
                         ) else it
                     }
                     _userListUiState.value = BaseUiState.Success(updatedList)
@@ -124,5 +121,4 @@ class UserApiVM : ViewModel() {
     fun resetCreateState() {
         _createUserUiState.value = BaseUiState.None
     }
-
 }
