@@ -32,6 +32,7 @@ object NavigationKey {
     data object ScreenSliderNewRoute
     data object NotificationPermissionRoute
     data object UserApiScreenRoute
+    data object ScreenCameraLauncher
 
     @Serializable
     data class UserProfile(

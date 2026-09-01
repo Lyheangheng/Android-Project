@@ -175,6 +175,12 @@ class HomeRepository {
             description = "Click to go to UserApi Screen",
             route = NavigationKey.UserApiScreenRoute
         ),
+        ComponentModel(
+            id = 29,
+            title = "Camera Launcher Screen",
+            description = "Click to go to Camera Launcher Screen",
+            route = NavigationKey.ScreenCameraLauncher
+        ),
     )
 
     suspend fun getComponentListFromHomeRepo(): Flow<List<ComponentModel>> {

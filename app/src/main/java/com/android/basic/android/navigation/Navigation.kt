@@ -15,6 +15,7 @@ import com.android.basic.android.feature.chip.ScreenChip
 import com.android.basic.android.feature.alertdialog.ScreenAlertDialog
 import com.android.basic.android.feature.badge.ScreenBadge
 import com.android.basic.android.feature.bottomSheet.ScreenBottomSheet
+import com.android.basic.android.feature.camera.ScreenCameraLauncher
 import com.android.basic.android.feature.card.ScreenCardAndHomeWork1
 import com.android.basic.android.feature.carousel.ScreenCarousel
 import com.android.basic.android.feature.checkBox.ScreenCheckBox
@@ -235,6 +236,12 @@ fun Navigation() {
                 is NavigationKey.NotificationPermissionRoute -> NavEntry(key) {
                     ScreenNotificationPermisson(
                         onBack = { backStack.removeLastOrNull() }
+                    )
+                }
+
+                is NavigationKey.ScreenCameraLauncher -> NavEntry(key) {
+                    ScreenCameraLauncher(
+                        onBack = onBack
                     )
                 }
 
